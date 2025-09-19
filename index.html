@@ -37,36 +37,61 @@
             user-select: none;
         }
 
-        /* Fondo de universo */
+        /* Fondo de universo infinito */
         .universe {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            min-height: 100vh;
-            min-height: -webkit-fill-available; /* iOS Safari */
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            top: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 200vh;
+            background: 
+                radial-gradient(ellipse 800px 600px at 25% 25%, #1B2735 0%, rgba(27, 39, 53, 0.8) 40%, transparent 70%),
+                radial-gradient(ellipse 600px 400px at 75% 75%, #1B2735 0%, rgba(27, 39, 53, 0.6) 30%, transparent 60%),
+                radial-gradient(ellipse 1000px 800px at 50% 100%, #1B2735 0%, rgba(27, 39, 53, 0.4) 50%, transparent 80%),
+                linear-gradient(0deg, #090A0F 0%, #1B2735 50%, #090A0F 100%);
+            background-size: 
+                200vw 200vh,
+                200vw 200vh,
+                200vw 200vh,
+                200vw 200vh;
+            background-repeat: repeat;
             background-attachment: fixed;
-            background-size: cover;
-            background-repeat: no-repeat;
-            z-index: -1;
+            z-index: -2;
             overflow: hidden;
         }
+        
+        /* Capa adicional para asegurar cobertura infinita */
+        .universe::before {
+            content: '';
+            position: absolute;
+            top: -100vh;
+            left: -100vw;
+            width: 400vw;
+            height: 400vh;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(27, 39, 53, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(27, 39, 53, 0.2) 0%, transparent 40%),
+                radial-gradient(ellipse at center, #090A0F 0%, #1B2735 50%, #090A0F 100%);
+            background-size: 
+                100vw 100vh,
+                100vw 100vh,
+                200vw 200vh;
+            background-repeat: repeat;
+            z-index: -1;
+        }
 
-        /* Estrellas animadas */
+        /* Estrellas animadas infinitas */
         .stars {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            min-height: 100vh;
-            min-height: -webkit-fill-available; /* iOS Safari */
+            top: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 200vh;
             z-index: -1;
-            overflow: hidden;
+            overflow: visible;
         }
-
+        
+        /* Estrellas con distribución infinita */
         .star {
             position: absolute;
             width: 2px;
@@ -74,6 +99,7 @@
             background: white;
             border-radius: 50%;
             animation: twinkle 2s infinite alternate;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
         }
 
         @keyframes twinkle {
@@ -410,7 +436,7 @@
             }
         }
 
-        /* Optimizaciones para dispositivos móviles - fondo completo */
+        /* Optimizaciones para dispositivos móviles - fondo infinito */
         @media (max-width: 768px) {
             html {
                 height: 100%;
@@ -432,24 +458,33 @@
             
             .universe {
                 position: fixed;
-                top: -10px; /* Compensar posibles espacios */
-                left: -10px;
-                width: calc(100vw + 20px);
-                height: calc(100vh + 20px);
-                min-height: calc(100vh + 20px);
-                min-height: -webkit-fill-available;
-                background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-                z-index: -1;
+                top: -100vh; /* Mayor extensión para móviles */
+                left: -100vw;
+                width: 300vw;
+                height: 300vh;
+                background: 
+                    radial-gradient(ellipse 800px 600px at 50% 50%, #1B2735 0%, rgba(27, 39, 53, 0.6) 40%, transparent 70%),
+                    linear-gradient(0deg, #090A0F 0%, #1B2735 50%, #090A0F 100%);
+                background-size: 
+                    150vw 150vh,
+                    300vw 300vh;
+                background-repeat: repeat;
+                z-index: -2;
+            }
+            
+            .universe::before {
+                width: 500vw;
+                height: 500vh;
+                top: -150vh;
+                left: -150vw;
             }
             
             .stars {
                 position: fixed;
-                top: -10px;
-                left: -10px;
-                width: calc(100vw + 20px);
-                height: calc(100vh + 20px);
-                min-height: calc(100vh + 20px);
-                min-height: -webkit-fill-available;
+                top: -100vh;
+                left: -100vw;
+                width: 300vw;
+                height: 300vh;
                 z-index: -1;
             }
             
@@ -1325,32 +1360,46 @@
     </div>
 
     <script>
-        // Crear estrellas animadas (optimizado para dispositivos)
+        // Crear estrellas animadas infinitas (optimizado para dispositivos)
         function createStars() {
             const starsContainer = document.querySelector('.stars');
             // Detección más precisa de dispositivos móviles
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
             const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
             
-            // Reducir drásticamente en móviles
+            // Reducir drásticamente en móviles pero distribuir en área extendida
             let numberOfStars;
             if (isLowEnd) {
-                numberOfStars = 15; // Muy pocos para dispositivos de gama baja
+                numberOfStars = 20; // Muy pocos para dispositivos de gama baja
             } else if (isMobile) {
-                numberOfStars = 25; // Menos para móviles normales
+                numberOfStars = 40; // Menos para móviles normales
             } else {
-                numberOfStars = 60; // Reducido también en desktop
+                numberOfStars = 120; // Más para desktop en área extendida
             }
 
+            // Distribuir estrellas en área extendida (200vw x 200vh)
             for (let i = 0; i < numberOfStars; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 2) + 's'; // Animaciones más lentas
+                
+                // Distribuir en área extendida para efecto infinito
+                star.style.left = (Math.random() * 200) + '%'; // 0% a 200%
+                star.style.top = (Math.random() * 200) + '%';  // 0% a 200%
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Animaciones variadas
+                
+                // Variación de tamaños para más realismo
+                const size = Math.random() * 2 + 1; // 1px a 3px
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // Variación de brillo
+                star.style.opacity = Math.random() * 0.8 + 0.2; // 0.2 a 1.0
+                
                 starsContainer.appendChild(star);
             }
+            
+            console.log(`✨ ${numberOfStars} estrellas distribuidas en área infinita`);
         }
 
         // Crear partículas flotantes (adaptado por dispositivo)
