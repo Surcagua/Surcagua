@@ -2,10 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#090A0F">
     <title>Para mis amores</title>
     <style>
         * {
@@ -15,9 +17,16 @@
         }
 
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Arial', sans-serif;
             overflow-x: hidden;
             cursor: none;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
+            width: 100vw;
+            position: relative;
+            background: #090A0F; /* Color de respaldo */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             -webkit-tap-highlight-color: transparent;
@@ -33,18 +42,29 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background-attachment: fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
             z-index: -1;
+            overflow: hidden;
         }
 
         /* Estrellas animadas */
         .stars {
             position: fixed;
-            width: 100%;
-            height: 100%;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
             z-index: -1;
+            overflow: hidden;
         }
 
         .star {
@@ -157,12 +177,16 @@
         /* Contenedor principal */
         .container {
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
+            width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             padding: 20px;
+            box-sizing: border-box;
+            margin: 0;
         }
 
         /* Título principal */
@@ -386,7 +410,58 @@
             }
         }
 
-        /* Tablets y laptops (768px - 1199px) */
+        /* Optimizaciones para dispositivos móviles - fondo completo */
+        @media (max-width: 768px) {
+            html {
+                height: 100%;
+                height: -webkit-fill-available;
+                margin: 0;
+                padding: 0;
+                background: #090A0F;
+            }
+            
+            body {
+                height: 100%;
+                height: -webkit-fill-available;
+                margin: 0;
+                padding: 0;
+                background: #090A0F;
+                position: relative;
+                overflow-x: hidden;
+            }
+            
+            .universe {
+                position: fixed;
+                top: -10px; /* Compensar posibles espacios */
+                left: -10px;
+                width: calc(100vw + 20px);
+                height: calc(100vh + 20px);
+                min-height: calc(100vh + 20px);
+                min-height: -webkit-fill-available;
+                background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+                z-index: -1;
+            }
+            
+            .stars {
+                position: fixed;
+                top: -10px;
+                left: -10px;
+                width: calc(100vw + 20px);
+                height: calc(100vh + 20px);
+                min-height: calc(100vh + 20px);
+                min-height: -webkit-fill-available;
+                z-index: -1;
+            }
+            
+            .container {
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                width: 100vw;
+                margin: 0;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+        }
         @media (max-width: 1199px) and (min-width: 769px) {
             .title {
                 font-size: 3.2em;
@@ -458,9 +533,29 @@
 
         /* Móviles (320px - 480px) */
         @media (max-width: 480px) {
+            html {
+                background: #090A0F !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100% !important;
+                height: -webkit-fill-available !important;
+            }
+            
+            body {
+                background: #090A0F !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                min-height: 100vh !important;
+                min-height: -webkit-fill-available !important;
+            }
+            
             .container {
                 padding: 10px;
                 min-height: 100vh;
+                min-height: -webkit-fill-available;
+                width: 100vw;
+                margin: 0;
+                box-sizing: border-box;
             }
             
             .title {
@@ -1353,19 +1448,18 @@
                     }, 300); // Más rápido
                 };
 
-                // Mostrar imagen con debounce
+                // Mostrar imagen con respuesta instantánea
                 const showFlowerImage = () => {
                     if (isProcessing) return;
                     isProcessing = true;
                     
                     const imageNumber = index + 1;
-                    const extensions = ['jpeg', 'jpg', 'png', 'webp'];
-                    tryLoadImage(imageNumber, extensions, 0);
+                    showFlowerImageInstant(imageNumber);
                     
                     // Reset después de un tiempo
                     setTimeout(() => {
                         isProcessing = false;
-                    }, 1000);
+                    }, 500); // Reducido de 1000ms
                 };
 
                 // Usar solo un tipo de evento según el dispositivo
@@ -1437,7 +1531,7 @@
             });
         }
 
-        // Reproductor de audio
+        // Reproductor de audio (optimizado para autoplay)
         function setupAudioPlayer() {
             const audio = document.getElementById('backgroundMusic');
             const playPauseBtn = document.getElementById('playPauseBtn');
@@ -1460,6 +1554,10 @@
             // Configurar volumen inicial
             audio.volume = 0.7;
             
+            // Configuración para autoplay
+            audio.preload = 'auto';
+            audio.muted = false;
+            
             // Función para reproducir/pausar
             function togglePlayPause() {
                 if (isPlaying) {
@@ -1469,7 +1567,7 @@
                 } else {
                     audio.play().catch(e => {
                         console.log('Error al reproducir audio:', e);
-                        // En algunos navegadores se requiere interacción del usuario
+                        // Fallback: permitir reproducción manual
                     });
                     playPauseBtn.textContent = '⏸️';
                     musicAnimation.classList.remove('paused');
@@ -1522,45 +1620,51 @@
                 isMuted = !isMuted;
             });
             
-            // Intentar reproducción automática inmediata
-            // Nota: Algunos navegadores pueden bloquear autoplay
-            setTimeout(() => {
-                if (audio && audio.readyState >= 2) { // HAVE_CURRENT_DATA o superior
-                    audio.play().then(() => {
-                        isPlaying = true;
-                        playPauseBtn.textContent = '⏸️';
-                        musicAnimation.classList.remove('paused');
-                    }).catch(e => {
-                        console.log('Reproducción automática bloqueada por el navegador');
-                        // Fallback: reproducir en el primer clic
-                        document.addEventListener('click', () => {
-                            if (!isPlaying && audio) {
-                                audio.play().then(() => {
-                                    isPlaying = true;
-                                    playPauseBtn.textContent = '⏸️';
-                                    musicAnimation.classList.remove('paused');
-                                }).catch(err => {
-                                    console.log('Error al reproducir:', err);
-                                });
-                            }
-                        }, { once: true });
-                    });
-                } else {
-                    console.log('Audio no está listo para reproducir');
-                    // Fallback para cuando el audio no esté listo
-                    document.addEventListener('click', () => {
-                        if (!isPlaying && audio) {
-                            audio.play().then(() => {
-                                isPlaying = true;
-                                playPauseBtn.textContent = '⏸️';
-                                musicAnimation.classList.remove('paused');
-                            }).catch(err => {
-                                console.log('Error al reproducir:', err);
-                            });
-                        }
-                    }, { once: true });
-                }
-            }, 2000); // Aumentar delay a 2 segundos
+            // AUTOPLAY AGRESIVO - Intentar reproducir inmediatamente
+            function attemptAutoplay() {
+                console.log('Intentando reproducción automática...');
+                
+                // Método 1: Reproducción directa
+                audio.play().then(() => {
+                    console.log('✅ Reproducción automática exitosa');
+                    isPlaying = true;
+                    playPauseBtn.textContent = '⏸️';
+                    musicAnimation.classList.remove('paused');
+                }).catch(error => {
+                    console.log('❌ Autoplay bloqueado:', error.message);
+                    
+                    // Método 2: Fallback con interacción del usuario
+                    const enableAudioOnInteraction = () => {
+                        audio.play().then(() => {
+                            console.log('✅ Audio iniciado tras interacción');
+                            isPlaying = true;
+                            playPauseBtn.textContent = '⏸️';
+                            musicAnimation.classList.remove('paused');
+                            
+                            // Remover listeners después del primer éxito
+                            document.removeEventListener('click', enableAudioOnInteraction);
+                            document.removeEventListener('touchstart', enableAudioOnInteraction);
+                            document.removeEventListener('keydown', enableAudioOnInteraction);
+                        }).catch(err => {
+                            console.log('Error en fallback:', err);
+                        });
+                    };
+                    
+                    // Escuchar cualquier interacción del usuario
+                    document.addEventListener('click', enableAudioOnInteraction, { once: true });
+                    document.addEventListener('touchstart', enableAudioOnInteraction, { once: true });
+                    document.addEventListener('keydown', enableAudioOnInteraction, { once: true });
+                    
+                    console.log('⏳ Esperando interacción del usuario para iniciar audio...');
+                });
+            }
+            
+            // Intentar autoplay cuando el audio esté listo
+            if (audio.readyState >= 2) {
+                attemptAutoplay();
+            } else {
+                audio.addEventListener('canplay', attemptAutoplay, { once: true });
+            }
             
             // Manejar errores de carga
             audio.addEventListener('error', (e) => {
@@ -1591,6 +1695,50 @@
 
         // Cache de imágenes para evitar recargas
         const imageCache = new Map();
+        const imagePreloadStatus = new Map();
+        
+        // Sistema de precarga agresiva de imágenes
+        function preloadAllImages() {
+            const extensions = ['jpeg', 'jpg', 'png', 'webp', 'gif'];
+            const maxImages = 8; // Número de flores
+            
+            console.log('Iniciando precarga de imágenes...');
+            
+            for (let imageNumber = 1; imageNumber <= maxImages; imageNumber++) {
+                const cacheKey = `image_${imageNumber}`;
+                let imageFound = false;
+                
+                // Probar todas las extensiones en paralelo
+                extensions.forEach((extension, index) => {
+                    const imageSrc = `images/${imageNumber}.${extension}`;
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        if (!imageFound) {
+                            imageFound = true;
+                            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                            const imageData = { src: imageSrc, phrase: phrase, loaded: true };
+                            imageCache.set(cacheKey, imageData);
+                            imagePreloadStatus.set(cacheKey, true);
+                            console.log(`✅ Imagen ${imageNumber} precargada: ${extension}`);
+                        }
+                    };
+                    
+                    img.onerror = function() {
+                        // Solo marcar como no encontrada si fue la última extensión
+                        if (index === extensions.length - 1 && !imageFound) {
+                            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                            const placeholderData = { src: '', phrase: phrase, loaded: true };
+                            imageCache.set(cacheKey, placeholderData);
+                            imagePreloadStatus.set(cacheKey, true);
+                            console.log(`❌ Imagen ${imageNumber} no encontrada`);
+                        }
+                    };
+                    
+                    img.src = imageSrc;
+                });
+            }
+        }
         
         // Sistema profesional de estrellas fugaces
         function createShootingStars() {
@@ -1695,59 +1843,53 @@
             });
         }
         
-        // Probar diferentes extensiones de imagen (optimizado)
-        function tryLoadImage(imageNumber, extensions, extensionIndex) {
+        // Función optimizada para mostrar imágenes instantáneamente
+        function showFlowerImageInstant(imageNumber) {
             const cacheKey = `image_${imageNumber}`;
             
-            // Verificar cache primero
+            // Si la imagen ya está en cache, mostrarla inmediatamente
             if (imageCache.has(cacheKey)) {
                 const cachedData = imageCache.get(cacheKey);
                 showImageModal(cachedData.src, cachedData.phrase);
                 return;
             }
             
-            if (extensionIndex >= extensions.length) {
-                // Si no se encuentra ninguna extensión, mostrar placeholder inmediatamente
-                const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
-                const placeholderData = { src: '', phrase: phrase };
-                imageCache.set(cacheKey, placeholderData);
-                showImageModal('', phrase);
-                return;
-            }
+            // Si no está en cache, mostrar placeholder inmediatamente y buscar en segundo plano
+            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+            showImageModal('', phrase + ' (Cargando...)');
+            
+            // Buscar imagen en segundo plano
+            const extensions = ['jpeg', 'jpg', 'png', 'webp'];
+            tryLoadImageBackground(imageNumber, extensions, 0, phrase);
+        }
+        
+        // Función auxiliar para cargar en segundo plano
+        function tryLoadImageBackground(imageNumber, extensions, extensionIndex, phrase) {
+            if (extensionIndex >= extensions.length) return;
             
             const extension = extensions[extensionIndex];
             const imageSrc = `images/${imageNumber}.${extension}`;
-            
-            // Crear una imagen temporal para probar si existe con timeout
             const testImage = new Image();
-            let imageLoaded = false;
-            
-            // Timeout para evitar esperas largas
-            const timeout = setTimeout(() => {
-                if (!imageLoaded) {
-                    testImage.src = ''; // Cancelar carga
-                    tryLoadImage(imageNumber, extensions, extensionIndex + 1);
-                }
-            }, 1500); // 1.5 segundos máximo
             
             testImage.onload = function() {
-                if (imageLoaded) return;
-                imageLoaded = true;
-                clearTimeout(timeout);
-                
-                // Guardar en cache
-                const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
-                const imageData = { src: imageSrc, phrase: phrase };
+                // Actualizar cache
+                const cacheKey = `image_${imageNumber}`;
+                const imageData = { src: imageSrc, phrase: phrase, loaded: true };
                 imageCache.set(cacheKey, imageData);
                 
-                showImageModal(imageSrc, phrase);
+                // Si el modal está abierto para esta imagen, actualizarlo
+                const modal = document.getElementById('flowerImageModal');
+                const modalImage = document.getElementById('modalImage');
+                const modalTitle = document.getElementById('modalTitle');
+                
+                if (modal && modal.classList.contains('active') && modalTitle.textContent.includes('Cargando')) {
+                    modalImage.src = imageSrc;
+                    modalTitle.textContent = phrase;
+                }
             };
             
             testImage.onerror = function() {
-                if (imageLoaded) return;
-                imageLoaded = true;
-                clearTimeout(timeout);
-                tryLoadImage(imageNumber, extensions, extensionIndex + 1);
+                tryLoadImageBackground(imageNumber, extensions, extensionIndex + 1, phrase);
             };
             
             testImage.src = imageSrc;
@@ -1788,6 +1930,9 @@
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
             const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
             
+            // ⚡ PRECARGA INMEDIATA DE IMÁGENES (PRIORIDAD MÁXIMA)
+            preloadAllImages();
+            
             // Inicializar funciones críticas inmediatamente
             setupCustomCursor();
             setupFlowerEffects();
@@ -1810,11 +1955,11 @@
                 console.log('Sistema de estrellas fugaces iniciado');
             }, 800);
             
-            // Reproductor de audio al final (menos prioritario)
+            // ⚡ REPRODUCTOR DE AUDIO CON PRIORIDAD ALTA
             setTimeout(() => {
-                console.log('Inicializando reproductor de audio...');
+                console.log('Inicializando reproductor de audio con autoplay...');
                 setupAudioPlayer();
-            }, 1000);
+            }, 200); // Mucho más temprano para autoplay
             
             // Precargar recursos en segundo plano para dispositivos potentes
             if (!isMobile && !isLowEnd) {
