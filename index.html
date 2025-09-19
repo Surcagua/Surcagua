@@ -6,7 +6,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Flores Amarillas - 21 de Septiembre</title>
+    <title>Para mis amores</title>
     <style>
         * {
             margin: 0;
@@ -59,6 +59,87 @@
         @keyframes twinkle {
             0% { opacity: 0.3; transform: scale(1); }
             100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Estrellas fugaces */
+        .shooting-star {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #ffffff, #FFD700);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 6px #ffffff,
+                0 0 12px #FFD700,
+                0 0 18px #FFD700;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(to left, 
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 215, 0, 0.6) 20%,
+                rgba(255, 215, 0, 0.3) 50%,
+                transparent 100%);
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px)) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .shooting-star.active {
+            animation: shootingStar 2.5s linear forwards;
+        }
+
+        /* Variaciones de estrellas fugaces */
+        .shooting-star.bright {
+            width: 4px;
+            height: 4px;
+            box-shadow: 
+                0 0 8px #ffffff,
+                0 0 16px #FFD700,
+                0 0 24px #FFD700,
+                0 0 32px #FFA500;
+        }
+
+        .shooting-star.bright::before {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(to left, 
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 215, 0, 0.8) 30%,
+                rgba(255, 215, 0, 0.4) 70%,
+                transparent 100%);
+        }
+
+        .shooting-star.fast {
+            animation-duration: 1.8s !important;
+        }
+
+        .shooting-star.slow {
+            animation-duration: 3.2s !important;
         }
 
         /* Cursor personalizado */
@@ -891,6 +972,73 @@
             .custom-cursor {
                 display: none !important;
             }
+            
+            /* Reducir animaciones en móviles */
+            .star {
+                animation-duration: 4s !important; /* Más lentas */
+            }
+            
+            .particle {
+                animation-duration: 6s !important; /* Más lentas */
+            }
+            
+            .flower {
+                animation-duration: 4s !important; /* Más lentas */
+            }
+            
+            .petal {
+                animation-duration: 3s !important; /* Más lentas */
+            }
+        }
+        
+        /* Optimizaciones extremas para dispositivos muy pequeños o de gama baja */
+        @media (max-width: 480px), (max-height: 600px) {
+            /* Deshabilitar algunas animaciones intensivas */
+            .title {
+                animation: none !important;
+            }
+            
+            .message {
+                animation: none !important;
+            }
+            
+            .audio-player {
+                animation-duration: 6s !important;
+            }
+            
+            /* Reducir efectos de box-shadow intensivos */
+            .flower-center,
+            .petal {
+                box-shadow: none !important;
+            }
+            
+            /* Simplificar gradientes */
+            .universe {
+                background: #1B2735 !important;
+            }
+            
+            /* Estrellas fugaces más simples en móviles */
+            .shooting-star {
+                width: 2px;
+                height: 2px;
+                box-shadow: 0 0 4px #FFD700 !important;
+            }
+            
+            .shooting-star::before {
+                width: 40px !important;
+                height: 1px !important;
+            }
+        }
+        
+        /* Optimización para dispositivos con pocos núcleos */
+        @media (max-width: 768px) {
+            .star:nth-child(n+16) {
+                display: none; /* Ocultar estrellas extra */
+            }
+            
+            .particle:nth-child(n+4) {
+                display: none; /* Limitar partículas */
+            }
         }
     </style>
 </head>
@@ -1085,9 +1233,19 @@
         // Crear estrellas animadas (optimizado para dispositivos)
         function createStars() {
             const starsContainer = document.querySelector('.stars');
-            // Menos estrellas en móviles para mejor rendimiento
-            const isMobile = window.innerWidth <= 768;
-            const numberOfStars = isMobile ? 50 : 100;
+            // Detección más precisa de dispositivos móviles
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            
+            // Reducir drásticamente en móviles
+            let numberOfStars;
+            if (isLowEnd) {
+                numberOfStars = 15; // Muy pocos para dispositivos de gama baja
+            } else if (isMobile) {
+                numberOfStars = 25; // Menos para móviles normales
+            } else {
+                numberOfStars = 60; // Reducido también en desktop
+            }
 
             for (let i = 0; i < numberOfStars; i++) {
                 const star = document.createElement('div');
@@ -1095,32 +1253,62 @@
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
                 star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's'; // Animaciones más lentas
                 starsContainer.appendChild(star);
             }
         }
 
         // Crear partículas flotantes (adaptado por dispositivo)
         function createParticles() {
-            // Menos partículas en móviles para mejor rendimiento
-            const isMobile = window.innerWidth <= 768;
-            const particleInterval = isMobile ? 800 : 300;
-            const particleDuration = isMobile ? 6000 : 5000;
+            // Detección mejorada de dispositivos
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
             
-            setInterval(() => {
+            // Intervalos y duraciones optimizados
+            let particleInterval, particleDuration, maxParticles;
+            
+            if (isLowEnd) {
+                particleInterval = 2000; // Muy pocas partículas
+                particleDuration = 8000;
+                maxParticles = 3;
+            } else if (isMobile) {
+                particleInterval = 1200;
+                particleDuration = 6000;
+                maxParticles = 5;
+            } else {
+                particleInterval = 500;
+                particleDuration = 5000;
+                maxParticles = 8;
+            }
+            
+            let activeParticles = 0;
+            
+            const particleIntervalId = setInterval(() => {
+                // Limitar número máximo de partículas activas
+                if (activeParticles >= maxParticles) return;
+                
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particle.style.animationDuration = (Math.random() * 2 + 3) + 's'; // Más lentas
                 document.body.appendChild(particle);
+                activeParticles++;
 
                 // Eliminar partícula después de la animación
                 setTimeout(() => {
                     if (particle.parentNode) {
                         particle.remove();
+                        activeParticles--;
                     }
                 }, particleDuration);
             }, particleInterval);
+            
+            // Pausar partículas cuando la página no es visible
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    clearInterval(particleIntervalId);
+                }
+            });
         }
 
         // Cursor personalizado (solo para desktop)
@@ -1146,40 +1334,56 @@
             }
         }
 
-        // Efecto de brillo en las flores y mostrar imagen al hacer clic
+        // Efecto de brillo en las flores y mostrar imagen al hacer clic (optimizado)
         function setupFlowerEffects() {
             const flowers = document.querySelectorAll('.flower');
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             
             flowers.forEach((flower, index) => {
-                // Efecto de brillo
+                let isProcessing = false; // Prevenir clics múltiples
+                
+                // Efecto de brillo optimizado
                 const addGlowEffect = () => {
-                    flower.style.filter = 'brightness(1.5)';
+                    if (flower.style.filter) return; // Ya tiene efecto activo
+                    flower.style.filter = 'brightness(1.3)';
+                    flower.style.transform = 'scale(1.05)';
                     setTimeout(() => {
-                        flower.style.filter = 'brightness(1)';
-                    }, 500);
+                        flower.style.filter = '';
+                        flower.style.transform = '';
+                    }, 300); // Más rápido
                 };
 
-                // Mostrar imagen
+                // Mostrar imagen con debounce
                 const showFlowerImage = () => {
+                    if (isProcessing) return;
+                    isProcessing = true;
+                    
                     const imageNumber = index + 1;
-                    // Array de extensiones posibles
                     const extensions = ['jpeg', 'jpg', 'png', 'webp'];
                     tryLoadImage(imageNumber, extensions, 0);
+                    
+                    // Reset después de un tiempo
+                    setTimeout(() => {
+                        isProcessing = false;
+                    }, 1000);
                 };
 
-                // Event listeners para diferentes dispositivos
-                flower.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    addGlowEffect();
-                    showFlowerImage();
-                });
-
-                // Para dispositivos táctiles
-                flower.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    addGlowEffect();
-                    showFlowerImage();
-                }, { passive: false });
+                // Usar solo un tipo de evento según el dispositivo
+                if (isTouchDevice) {
+                    // Solo touchend para dispositivos táctiles (más confiable)
+                    flower.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        addGlowEffect();
+                        showFlowerImage();
+                    }, { passive: false });
+                } else {
+                    // Solo click para dispositivos de escritorio
+                    flower.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        addGlowEffect();
+                        showFlowerImage();
+                    });
+                }
 
                 // Hacer las flores más accesibles
                 flower.style.cursor = 'pointer';
@@ -1187,14 +1391,16 @@
                 flower.setAttribute('role', 'button');
                 flower.setAttribute('aria-label', `Ver imagen de la flor ${index + 1}`);
 
-                // Soporte para teclado
-                flower.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        addGlowEffect();
-                        showFlowerImage();
-                    }
-                });
+                // Soporte para teclado (solo si no es táctil)
+                if (!isTouchDevice) {
+                    flower.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addGlowEffect();
+                            showFlowerImage();
+                        }
+                    });
+                }
             });
         }
 
@@ -1383,11 +1589,128 @@
             "Mis amores eternos y verdaderos 💕👼"
         ];
 
-        // Probar diferentes extensiones de imagen
+        // Cache de imágenes para evitar recargas
+        const imageCache = new Map();
+        
+        // Sistema profesional de estrellas fugaces
+        function createShootingStars() {
+            // Detectar capacidad del dispositivo
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            const isHighEnd = !isMobile && navigator.hardwareConcurrency >= 4;
+            
+            // Configuración según dispositivo
+            let config = {
+                minInterval: 8000,    // Intervalo mínimo entre estrellas
+                maxInterval: 15000,   // Intervalo máximo
+                probability: 0.7,     // Probabilidad de aparición
+                maxConcurrent: 1      // Máximo de estrellas simultáneas
+            };
+            
+            if (isLowEnd) {
+                config = {
+                    minInterval: 12000,
+                    maxInterval: 25000,
+                    probability: 0.5,
+                    maxConcurrent: 1
+                };
+            } else if (isMobile) {
+                config = {
+                    minInterval: 10000,
+                    maxInterval: 20000,
+                    probability: 0.6,
+                    maxConcurrent: 1
+                };
+            } else if (isHighEnd) {
+                config = {
+                    minInterval: 5000,
+                    maxInterval: 12000,
+                    probability: 0.8,
+                    maxConcurrent: 2
+                };
+            }
+            
+            let activeStars = 0;
+            
+            function scheduleNextStar() {
+                const interval = Math.random() * (config.maxInterval - config.minInterval) + config.minInterval;
+                
+                setTimeout(() => {
+                    if (Math.random() < config.probability && activeStars < config.maxConcurrent && !document.hidden) {
+                        createSingleShootingStar();
+                    }
+                    scheduleNextStar(); // Programar la siguiente
+                }, interval);
+            }
+            
+            function createSingleShootingStar() {
+                activeStars++;
+                
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                
+                // Variaciones aleatorias
+                const variations = ['', 'bright', 'fast', 'slow'];
+                const randomVariation = variations[Math.floor(Math.random() * variations.length)];
+                if (randomVariation) {
+                    star.classList.add(randomVariation);
+                }
+                
+                // Posición inicial aleatoria en el área superior izquierda
+                const startX = Math.random() * (window.innerWidth * 0.2) - 100;
+                const startY = Math.random() * (window.innerHeight * 0.2) - 100;
+                
+                star.style.left = startX + 'px';
+                star.style.top = startY + 'px';
+                
+                // Añadir al DOM
+                document.body.appendChild(star);
+                
+                // Activar animación
+                requestAnimationFrame(() => {
+                    star.classList.add('active');
+                });
+                
+                // Limpiar después de la animación
+                const duration = star.classList.contains('fast') ? 1800 : 
+                               star.classList.contains('slow') ? 3200 : 2500;
+                
+                setTimeout(() => {
+                    if (star.parentNode) {
+                        star.remove();
+                    }
+                    activeStars--;
+                }, duration + 100);
+            }
+            
+            // Iniciar el sistema
+            scheduleNextStar();
+            
+            // Pausar cuando la página no es visible (optimización de batería)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Las estrellas activas seguirán su curso, pero no se crearán nuevas
+                    console.log('Estrellas fugaces pausadas (página no visible)');
+                }
+            });
+        }
+        
+        // Probar diferentes extensiones de imagen (optimizado)
         function tryLoadImage(imageNumber, extensions, extensionIndex) {
+            const cacheKey = `image_${imageNumber}`;
+            
+            // Verificar cache primero
+            if (imageCache.has(cacheKey)) {
+                const cachedData = imageCache.get(cacheKey);
+                showImageModal(cachedData.src, cachedData.phrase);
+                return;
+            }
+            
             if (extensionIndex >= extensions.length) {
-                // Si no se encuentra ninguna extensión, mostrar placeholder
+                // Si no se encuentra ninguna extensión, mostrar placeholder inmediatamente
                 const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                const placeholderData = { src: '', phrase: phrase };
+                imageCache.set(cacheKey, placeholderData);
                 showImageModal('', phrase);
                 return;
             }
@@ -1395,17 +1718,35 @@
             const extension = extensions[extensionIndex];
             const imageSrc = `images/${imageNumber}.${extension}`;
             
-            // Crear una imagen temporal para probar si existe
+            // Crear una imagen temporal para probar si existe con timeout
             const testImage = new Image();
+            let imageLoaded = false;
+            
+            // Timeout para evitar esperas largas
+            const timeout = setTimeout(() => {
+                if (!imageLoaded) {
+                    testImage.src = ''; // Cancelar carga
+                    tryLoadImage(imageNumber, extensions, extensionIndex + 1);
+                }
+            }, 1500); // 1.5 segundos máximo
             
             testImage.onload = function() {
-                // Si la imagen carga correctamente, mostrarla
+                if (imageLoaded) return;
+                imageLoaded = true;
+                clearTimeout(timeout);
+                
+                // Guardar en cache
                 const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                const imageData = { src: imageSrc, phrase: phrase };
+                imageCache.set(cacheKey, imageData);
+                
                 showImageModal(imageSrc, phrase);
             };
             
             testImage.onerror = function() {
-                // Si falla, probar la siguiente extensión
+                if (imageLoaded) return;
+                imageLoaded = true;
+                clearTimeout(timeout);
                 tryLoadImage(imageNumber, extensions, extensionIndex + 1);
             };
             
@@ -1439,45 +1780,96 @@
             document.body.style.overflow = 'auto'; // Restaurar scroll
         }
 
-        // Inicializar todas las funciones
+        // Inicializar todas las funciones (optimizado para rendimiento)
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM completamente cargado');
             
-            // Inicializar funciones básicas inmediatamente
-            createStars();
-            createParticles();
+            // Detectar tipo de dispositivo
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            
+            // Inicializar funciones críticas inmediatamente
             setupCustomCursor();
             setupFlowerEffects();
             createImageModal();
             
-            // Esperar un poco más para el reproductor de audio
+            // Cargar elementos menos críticos con delay escalonado
+            setTimeout(() => {
+                createStars();
+            }, 100);
+            
+            setTimeout(() => {
+                if (!isLowEnd) { // Solo crear partículas si no es gama baja
+                    createParticles();
+                }
+            }, 300);
+            
+            // Sistema de estrellas fugaces
+            setTimeout(() => {
+                createShootingStars();
+                console.log('Sistema de estrellas fugaces iniciado');
+            }, 800);
+            
+            // Reproductor de audio al final (menos prioritario)
             setTimeout(() => {
                 console.log('Inicializando reproductor de audio...');
                 setupAudioPlayer();
-            }, 500);
+            }, 1000);
+            
+            // Precargar recursos en segundo plano para dispositivos potentes
+            if (!isMobile && !isLowEnd) {
+                setTimeout(() => {
+                    preloadResources();
+                }, 2000);
+            }
         });
+        
+        // Función para precargar recursos
+        function preloadResources() {
+            // Precargar algunas imágenes comunes
+            const commonExtensions = ['jpeg', 'jpg'];
+            for (let i = 1; i <= 3; i++) {
+                commonExtensions.forEach(ext => {
+                    const img = new Image();
+                    img.src = `images/${i}.${ext}`;
+                });
+            }
+        }
 
         // Backup: Si DOMContentLoaded ya pasó
         if (document.readyState === 'loading') {
             // El DOM aún se está cargando
         } else {
-            // El DOM ya está cargado
+            // El DOM ya está cargado - inicialización de respaldo
             setTimeout(() => {
                 console.log('Inicialización de respaldo');
+                if (!document.getElementById('backgroundMusic')) return;
                 setupAudioPlayer();
             }, 1000);
         }
 
-        // Efecto de paralaje suave
-        window.addEventListener('scroll', () => {
+        // Efecto de paralaje suave (optimizado con throttling)
+        let ticking = false;
+        function updateParallax() {
             const scrolled = window.pageYOffset;
             const flowers = document.querySelectorAll('.flower');
             
             flowers.forEach((flower, index) => {
-                const speed = 0.5 + (index * 0.1);
+                const speed = 0.3 + (index * 0.05); // Reducido para menos intensidad
                 flower.style.transform = `translateY(${scrolled * speed}px)`;
             });
-        });
+            ticking = false;
+        }
+        
+        // Solo habilitar paralaje en dispositivos de escritorio
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches && window.innerWidth > 768) {
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
     </script>
 </body>
 </html>
