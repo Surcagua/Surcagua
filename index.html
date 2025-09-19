@@ -26,7 +26,7 @@
             min-height: -webkit-fill-available; /* iOS Safari */
             width: 100vw;
             position: relative;
-            background: #090A0F; /* Color de respaldo */
+            background: #1a1a2e; /* Color uniforme */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             -webkit-tap-highlight-color: transparent;
@@ -37,46 +37,39 @@
             user-select: none;
         }
 
-        /* Fondo de universo infinito */
+        /* Fondo de universo de color sólido */
         .universe {
             position: fixed;
-            top: -50vh;
-            left: -50vw;
-            width: 200vw;
-            height: 200vh;
-            background: 
-                radial-gradient(ellipse 800px 600px at 25% 25%, #1B2735 0%, rgba(27, 39, 53, 0.8) 40%, transparent 70%),
-                radial-gradient(ellipse 600px 400px at 75% 75%, #1B2735 0%, rgba(27, 39, 53, 0.6) 30%, transparent 60%),
-                radial-gradient(ellipse 1000px 800px at 50% 100%, #1B2735 0%, rgba(27, 39, 53, 0.4) 50%, transparent 80%),
-                linear-gradient(0deg, #090A0F 0%, #1B2735 50%, #090A0F 100%);
-            background-size: 
-                200vw 200vh,
-                200vw 200vh,
-                200vw 200vh,
-                200vw 200vh;
-            background-repeat: repeat;
-            background-attachment: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1a2e;
             z-index: -2;
-            overflow: hidden;
         }
         
-        /* Capa adicional para asegurar cobertura infinita */
+        /* Capa de estrellas */
         .universe::before {
             content: '';
             position: absolute;
-            top: -100vh;
-            left: -100vw;
-            width: 400vw;
-            height: 400vh;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(27, 39, 53, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(27, 39, 53, 0.2) 0%, transparent 40%),
-                radial-gradient(ellipse at center, #090A0F 0%, #1B2735 50%, #090A0F 100%);
-            background-size: 
-                100vw 100vh,
-                100vw 100vh,
-                200vw 200vh;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent),
+                radial-gradient(1px 1px at 200px 60px, #ffffff, transparent),
+                radial-gradient(2px 2px at 240px 90px, #ffffff, transparent),
+                radial-gradient(1px 1px at 280px 20px, #ffffff, transparent),
+                radial-gradient(1px 1px at 320px 50px, #ffffff, transparent),
+                radial-gradient(2px 2px at 360px 80px, #ffffff, transparent);
             background-repeat: repeat;
+            background-size: 400px 120px;
+            opacity: 0.8;
             z-index: -1;
         }
 
@@ -436,14 +429,14 @@
             }
         }
 
-        /* Optimizaciones para dispositivos móviles - fondo infinito */
+        /* Optimizaciones para dispositivos móviles - fondo color sólido */
         @media (max-width: 768px) {
             html {
                 height: 100%;
                 height: -webkit-fill-available;
                 margin: 0;
                 padding: 0;
-                background: #090A0F;
+                background: #1a1a2e;
             }
             
             body {
@@ -451,41 +444,25 @@
                 height: -webkit-fill-available;
                 margin: 0;
                 padding: 0;
-                background: #090A0F;
+                background: #1a1a2e;
                 position: relative;
                 overflow-x: hidden;
             }
             
             .universe {
                 position: fixed;
-                top: -100vh; /* Mayor extensión para móviles */
-                left: -100vw;
-                width: 300vw;
-                height: 300vh;
-                background: 
-                    radial-gradient(ellipse 800px 600px at 50% 50%, #1B2735 0%, rgba(27, 39, 53, 0.6) 40%, transparent 70%),
-                    linear-gradient(0deg, #090A0F 0%, #1B2735 50%, #090A0F 100%);
-                background-size: 
-                    150vw 150vh,
-                    300vw 300vh;
-                background-repeat: repeat;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                height: -webkit-fill-available;
+                background: #1a1a2e;
                 z-index: -2;
             }
             
             .universe::before {
-                width: 500vw;
-                height: 500vh;
-                top: -150vh;
-                left: -150vw;
-            }
-            
-            .stars {
-                position: fixed;
-                top: -100vh;
-                left: -100vw;
-                width: 300vw;
-                height: 300vh;
-                z-index: -1;
+                background-size: 300px 100px;
+                opacity: 0.6;
             }
             
             .container {
@@ -497,6 +474,8 @@
                 box-sizing: border-box;
             }
         }
+        
+        /* Tablets y laptops (768px - 1199px) */
         @media (max-width: 1199px) and (min-width: 769px) {
             .title {
                 font-size: 3.2em;
@@ -1034,6 +1013,25 @@
             }
         }
 
+        @keyframes fadeInOut {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+            15% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            85% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
         /* Indicador visual para flores interactivas */
         .flower::after {
             content: '📸';
@@ -1360,6 +1358,174 @@
     </div>
 
     <script>
+        // Variables globales para el control de audio
+        let userHasInteracted = false;
+        let overlayShown = false;
+        
+        // Función global para mostrar ventana de bienvenida
+        function showAutoplayNotification() {
+            // Evitar múltiples overlays
+            if (overlayShown || userHasInteracted) return;
+            overlayShown = true;
+            
+            console.log('🌟 Mostrando ventana de bienvenida principal...');
+            // Crear overlay de inicio musical
+            const overlay = document.createElement('div');
+            overlay.id = 'musicStartOverlay';
+            overlay.innerHTML = `
+                <div class="music-start-container">
+                    <div class="music-icon">🎵</div>
+                    <h3>¡Bienvenida!</h3>
+                    <p>Toca el botón para iniciar la aventura musical</p>
+                    <button class="start-music-btn">🌟 Iniciar Aventura 🌟</button>
+                    <small>Haz clic en cualquier lugar también funciona</small>
+                </div>
+            `;
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(26, 26, 46, 0.95);
+                backdrop-filter: blur(10px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.5s ease-out;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                .music-start-container {
+                    text-align: center;
+                    color: white;
+                    padding: 40px;
+                    border-radius: 20px;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(20px);
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    max-width: 400px;
+                    animation: slideInScale 0.6s ease-out;
+                }
+                
+                .music-icon {
+                    font-size: 60px;
+                    margin-bottom: 20px;
+                    animation: musicPulse 2s ease-in-out infinite;
+                }
+                
+                .music-start-container h3 {
+                    margin: 0 0 15px 0;
+                    font-size: 28px;
+                    color: #FFD700;
+                    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+                }
+                
+                .music-start-container p {
+                    margin: 0 0 25px 0;
+                    font-size: 16px;
+                    color: rgba(255, 255, 255, 0.9);
+                    line-height: 1.5;
+                }
+                
+                .start-music-btn {
+                    background: linear-gradient(45deg, #FFD700, #FFA500);
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 50px;
+                    color: #333;
+                    font-size: 18px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+                    margin-bottom: 15px;
+                    display: block;
+                    width: 100%;
+                }
+                
+                .start-music-btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6);
+                    background: linear-gradient(45deg, #FFA500, #FFD700);
+                }
+                
+                .music-start-container small {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 12px;
+                }
+                
+                @keyframes musicPulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+                
+                @keyframes slideInScale {
+                    0% { 
+                        opacity: 0; 
+                        transform: scale(0.8) translateY(30px); 
+                    }
+                    100% { 
+                        opacity: 1; 
+                        transform: scale(1) translateY(0); 
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(overlay);
+            
+            // Event listener para el botón
+            const startBtn = overlay.querySelector('.start-music-btn');
+            startBtn.addEventListener('click', () => {
+                enableAudioOnFirstInteraction();
+                document.body.removeChild(overlay);
+                document.head.removeChild(style);
+            });
+            
+            // También permitir clic en cualquier lugar del overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    enableAudioOnFirstInteraction();
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                }
+            });
+        }
+        
+        // Función global para activar audio
+        function enableAudioOnFirstInteraction() {
+            if (userHasInteracted) return; // Evitar múltiples activaciones
+            
+            userHasInteracted = true;
+            console.log('🎵 Iniciando aventura por interacción del usuario...');
+            
+            // Obtener referencias a los elementos de audio
+            const audio = document.getElementById('backgroundMusic');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const musicAnimation = document.getElementById('musicAnimation');
+            
+            if (audio && playPauseBtn && musicAnimation) {
+                // Reproducir audio directamente sin reintentos complejos
+                audio.play().then(() => {
+                    console.log('✅ Aventura iniciada exitosamente!');
+                    playPauseBtn.textContent = '⏸️';
+                    musicAnimation.classList.remove('paused');
+                }).catch(e => {
+                    console.log('❌ Error al iniciar aventura:', e);
+                    // Un solo reintento simple
+                    setTimeout(() => {
+                        audio.play().catch(err => {
+                            console.log('❌ La aventura no pudo iniciarse:', err);
+                        });
+                    }, 500);
+                });
+            }
+        }
+        
         // Crear estrellas animadas infinitas (optimizado para dispositivos)
         function createStars() {
             const starsContainer = document.querySelector('.stars');
@@ -1383,8 +1549,9 @@
                 star.className = 'star';
                 
                 // Distribuir en área extendida para efecto infinito
-                star.style.left = (Math.random() * 200) + '%'; // 0% a 200%
-                star.style.top = (Math.random() * 200) + '%';  // 0% a 200%
+                // Como el contenedor está desplazado -50vh/-50vw, ajustamos la distribución
+                star.style.left = (Math.random() * 100) + '%'; // 0% a 100% del contenedor extendido
+                star.style.top = (Math.random() * 100) + '%';  // 0% a 100% del contenedor extendido
                 star.style.animationDelay = Math.random() * 4 + 's';
                 star.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Animaciones variadas
                 
@@ -1580,7 +1747,7 @@
             });
         }
 
-        // Reproductor de audio (optimizado para autoplay)
+        // Reproductor de audio (optimizado para autoplay con manejo de bloqueos)
         function setupAudioPlayer() {
             const audio = document.getElementById('backgroundMusic');
             const playPauseBtn = document.getElementById('playPauseBtn');
@@ -1599,6 +1766,7 @@
             
             let isPlaying = false;
             let isMuted = false;
+            // userHasInteracted y overlayShown ya están definidas globalmente
             
             // Configurar volumen inicial
             audio.volume = 0.7;
@@ -1606,6 +1774,7 @@
             // Configuración para autoplay
             audio.preload = 'auto';
             audio.muted = false;
+            audio.loop = true;
             
             // Función para reproducir/pausar
             function togglePlayPause() {
@@ -1614,17 +1783,195 @@
                     playPauseBtn.textContent = '▶️';
                     musicAnimation.classList.add('paused');
                 } else {
-                    audio.play().catch(e => {
-                        console.log('Error al reproducir audio:', e);
-                        // Fallback: permitir reproducción manual
-                    });
+                    playAudio();
                     playPauseBtn.textContent = '⏸️';
                     musicAnimation.classList.remove('paused');
                 }
                 isPlaying = !isPlaying;
             }
             
-            // Event listeners
+            // Función mejorada para reproducir audio - SIEMPRE mostrar ventana de bienvenida
+            function playAudio() {
+                // En lugar de intentar autoplay automático, mostrar ventana de bienvenida
+                console.log('Mostrando ventana de bienvenida...');
+                showAutoplayNotification();
+            }
+            
+            // Mostrar ventana de bienvenida - MÉTODO PRINCIPAL
+            function showAutoplayNotification() {
+                // Evitar múltiples overlays
+                if (overlayShown || userHasInteracted) return;
+                overlayShown = true;
+                
+                console.log('🌟 Mostrando ventana de bienvenida principal...');
+                // Crear overlay de inicio musical
+                const overlay = document.createElement('div');
+                overlay.id = 'musicStartOverlay';
+                overlay.innerHTML = `
+                    <div class="music-start-container">
+                        <div class="music-icon">🎵</div>
+                        <h3>¡Bienvenida!</h3>
+                        <p>Toca el botón para iniciar la aventura musical</p>
+                        <button class="start-music-btn">� Iniciar Aventura �</button>
+                        <small>Haz clic en cualquier lugar también funciona</small>
+                    </div>
+                `;
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background: rgba(26, 26, 46, 0.95);
+                    backdrop-filter: blur(10px);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 0.5s ease-out;
+                `;
+                
+                const style = document.createElement('style');
+                style.textContent = `
+                    .music-start-container {
+                        text-align: center;
+                        color: white;
+                        padding: 40px;
+                        border-radius: 20px;
+                        background: rgba(255, 255, 255, 0.1);
+                        backdrop-filter: blur(20px);
+                        border: 2px solid rgba(255, 255, 255, 0.2);
+                        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                        max-width: 400px;
+                        animation: slideInScale 0.6s ease-out;
+                    }
+                    
+                    .music-icon {
+                        font-size: 60px;
+                        margin-bottom: 20px;
+                        animation: musicPulse 2s ease-in-out infinite;
+                    }
+                    
+                    .music-start-container h3 {
+                        margin: 0 0 15px 0;
+                        font-size: 28px;
+                        color: #FFD700;
+                        text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+                    }
+                    
+                    .music-start-container p {
+                        margin: 0 0 25px 0;
+                        font-size: 16px;
+                        color: rgba(255, 255, 255, 0.9);
+                        line-height: 1.5;
+                    }
+                    
+                    .start-music-btn {
+                        background: linear-gradient(45deg, #FFD700, #FFA500);
+                        border: none;
+                        padding: 15px 30px;
+                        border-radius: 50px;
+                        color: #333;
+                        font-size: 18px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+                        margin-bottom: 15px;
+                        display: block;
+                        width: 100%;
+                    }
+                    
+                    .start-music-btn:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6);
+                        background: linear-gradient(45deg, #FFA500, #FFD700);
+                    }
+                    
+                    .music-start-container small {
+                        color: rgba(255, 255, 255, 0.7);
+                        font-size: 12px;
+                    }
+                    
+                    @keyframes musicPulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.1); }
+                    }
+                    
+                    @keyframes slideInScale {
+                        0% { 
+                            opacity: 0; 
+                            transform: scale(0.8) translateY(30px); 
+                        }
+                        100% { 
+                            opacity: 1; 
+                            transform: scale(1) translateY(0); 
+                        }
+                    }
+                `;
+                
+                document.head.appendChild(style);
+                document.body.appendChild(overlay);
+                
+                // Event listener para el botón
+                const startBtn = overlay.querySelector('.start-music-btn');
+                startBtn.addEventListener('click', () => {
+                    enableAudioOnFirstInteraction();
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                });
+                
+                // También permitir clic en cualquier lugar del overlay
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        enableAudioOnFirstInteraction();
+                        document.body.removeChild(overlay);
+                        document.head.removeChild(style);
+                    }
+                });
+            }
+            
+            // Activar audio cuando el usuario interactúe - SIMPLIFICADO
+            function enableAudioOnFirstInteraction() {
+                if (userHasInteracted) return; // Evitar múltiples activaciones
+                
+                userHasInteracted = true;
+                console.log('🎵 Iniciando aventura por interacción del usuario...');
+                
+                // Reproducir audio directamente sin reintentos complejos
+                audio.play().then(() => {
+                    console.log('✅ Aventura iniciada exitosamente!');
+                    isPlaying = true;
+                    playPauseBtn.textContent = '⏸️';
+                    musicAnimation.classList.remove('paused');
+                }).catch(e => {
+                    console.log('❌ Error al iniciar aventura:', e);
+                    // Un solo reintento simple
+                    setTimeout(() => {
+                        audio.play().catch(err => {
+                            console.log('❌ La aventura no pudo iniciarse:', err);
+                        });
+                    }, 500);
+                });
+            }
+            
+            // Solo agregar listeners globales si no se muestra el overlay
+            // overlayShown ya está definida globalmente
+            
+            // Función mejorada para reproducir audio - SIEMPRE mostrar ventana de bienvenida
+            function playAudio() {
+                // En lugar de intentar autoplay automático, mostrar ventana de bienvenida
+                console.log('Mostrando ventana de bienvenida...');
+                showAutoplayNotification();
+            }
+            
+            // Solo agregar event listeners globales si no se muestra el overlay - ELIMINADO
+            // Ya no necesitamos esto porque siempre mostramos la ventana de bienvenida
+            
+            // NO intentar autoplay automático - siempre mostrar ventana de bienvenida
+            // El autoplay se iniciará solo cuando el usuario haga clic en la ventana
+            
+            // Event listeners del reproductor
             playPauseBtn.addEventListener('click', togglePlayPause);
             
             // Actualizar barra de progreso
@@ -2004,11 +2351,19 @@
                 console.log('Sistema de estrellas fugaces iniciado');
             }, 800);
             
-            // ⚡ REPRODUCTOR DE AUDIO CON PRIORIDAD ALTA
+            // ⚡ REPRODUCTOR DE AUDIO CON VENTANA DE BIENVENIDA PRINCIPAL
             setTimeout(() => {
-                console.log('Inicializando reproductor de audio con autoplay...');
+                console.log('Inicializando reproductor de audio...');
                 setupAudioPlayer();
-            }, 200); // Mucho más temprano para autoplay
+                
+                // Mostrar ventana de bienvenida inmediatamente
+                setTimeout(() => {
+                    if (!userHasInteracted) {
+                        console.log('🌟 Mostrando ventana de bienvenida...');
+                        showAutoplayNotification();
+                    }
+                }, 1000);
+            }, 200);
             
             // Precargar recursos en segundo plano para dispositivos potentes
             if (!isMobile && !isLowEnd) {
