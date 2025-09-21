@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#090A0F">
+    <title>Para mis amores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
+            width: 100vw;
+            position: relative;
+            background: #1a1a2e; /* Color uniforme */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Fondo de universo de color sólido */
+        .universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1a2e;
+            z-index: -2;
+        }
+        
+        /* Capa de estrellas */
+        .universe::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent),
+                radial-gradient(1px 1px at 200px 60px, #ffffff, transparent),
+                radial-gradient(2px 2px at 240px 90px, #ffffff, transparent),
+                radial-gradient(1px 1px at 280px 20px, #ffffff, transparent),
+                radial-gradient(1px 1px at 320px 50px, #ffffff, transparent),
+                radial-gradient(2px 2px at 360px 80px, #ffffff, transparent);
+            background-repeat: repeat;
+            background-size: 400px 120px;
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        /* Estrellas animadas infinitas - OPTIMIZADAS */
+        .stars {
+            position: fixed;
+            top: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 200vh;
+            z-index: -1;
+            overflow: visible;
+            will-change: transform; /* Optimización GPU */
+            transform: translateZ(0); /* Forzar aceleración hardware */
+        }
+        
+        /* Estrellas con distribución infinita - OPTIMIZADAS */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+            will-change: opacity, transform; /* Optimización GPU */
+            transform: translateZ(0); /* Aceleración hardware */
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1) translateZ(0); }
+            100% { opacity: 1; transform: scale(1.2) translateZ(0); }
+        }
+
+        /* Estrellas fugaces */
+        .shooting-star {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #ffffff, #FFD700);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 6px #ffffff,
+                0 0 12px #FFD700,
+                0 0 18px #FFD700;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(to left, 
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 215, 0, 0.6) 20%,
+                rgba(255, 215, 0, 0.3) 50%,
+                transparent 100%);
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px)) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .shooting-star.active {
+            animation: shootingStar 2.5s linear forwards;
+        }
+
+        /* Variaciones de estrellas fugaces */
+        .shooting-star.bright {
+            width: 4px;
+            height: 4px;
+            box-shadow: 
+                0 0 8px #ffffff,
+                0 0 16px #FFD700,
+                0 0 24px #FFD700,
+                0 0 32px #FFA500;
+        }
+
+        .shooting-star.bright::before {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(to left, 
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 215, 0, 0.8) 30%,
+                rgba(255, 215, 0, 0.4) 70%,
+                transparent 100%);
+        }
+
+        .shooting-star.fast {
+            animation-duration: 1.8s !important;
+        }
+
+        .shooting-star.slow {
+            animation-duration: 3.2s !important;
+        }
+
+        /* Cursor personalizado */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        /* Contenedor principal */
+        .container {
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS Safari */
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        /* Título principal */
+        .title {
+            text-align: center;
+            color: #FFD700;
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+            100% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+
+        .subtitle {
+            color: #FFF8DC;
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 50px;
+            opacity: 0.9;
+        }
+
+        /* Jardín de flores */
+        .flower-garden {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        /* Flores individuales - OPTIMIZADAS */
+        .flower {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            animation: float 3s infinite ease-in-out;
+            will-change: transform; /* Optimización GPU */
+            transform: translateZ(0); /* Aceleración hardware */
+        }
+
+        .flower:nth-child(even) {
+            animation-delay: -1.5s;
+        }
+
+        .flower:nth-child(3n) {
+            animation-delay: -1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg) translateZ(0); }
+            50% { transform: translateY(-20px) rotate(5deg) translateZ(0); }
+        }
+
+        /* Pétalos de la flor */
+        .flower-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #FF8C00;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+        }
+
+        .petal {
+            position: absolute;
+            width: 25px;
+            height: 40px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform-origin: 50% 80%;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            animation: petalGlow 2s infinite alternate;
+        }
+
+        @keyframes petalGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
+        }
+
+        .petal:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg); }
+        .petal:nth-child(2) { transform: translate(-50%, -50%) rotate(45deg); }
+        .petal:nth-child(3) { transform: translate(-50%, -50%) rotate(90deg); }
+        .petal:nth-child(4) { transform: translate(-50%, -50%) rotate(135deg); }
+        .petal:nth-child(5) { transform: translate(-50%, -50%) rotate(180deg); }
+        .petal:nth-child(6) { transform: translate(-50%, -50%) rotate(225deg); }
+        .petal:nth-child(7) { transform: translate(-50%, -50%) rotate(270deg); }
+        .petal:nth-child(8) { transform: translate(-50%, -50%) rotate(315deg); }
+
+        /* Tallo */
+        .stem {
+            position: absolute;
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(to bottom, #228B22, #006400);
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* Hojas */
+        .leaf {
+            position: absolute;
+            width: 15px;
+            height: 25px;
+            background: linear-gradient(45deg, #32CD32, #228B22);
+            border-radius: 50% 10% 50% 10%;
+            bottom: -40px;
+        }
+
+        .leaf.left {
+            left: -10px;
+            transform: rotate(-30deg);
+        }
+
+        .leaf.right {
+            right: -10px;
+            transform: rotate(30deg);
+        }
+
+        /* Posicionamiento de flores */
+        .flower:nth-child(1) { top: 10%; left: 15%; animation-duration: 2.5s; }
+        .flower:nth-child(2) { top: 20%; left: 70%; animation-duration: 3.2s; }
+        .flower:nth-child(3) { top: 40%; left: 25%; animation-duration: 2.8s; }
+        .flower:nth-child(4) { top: 50%; left: 80%; animation-duration: 3.5s; }
+        .flower:nth-child(5) { top: 70%; left: 10%; animation-duration: 2.3s; }
+        .flower:nth-child(6) { top: 60%; left: 60%; animation-duration: 3.1s; }
+        .flower:nth-child(7) { top: 30%; left: 45%; animation-duration: 2.9s; }
+        .flower:nth-child(8) { top: 80%; left: 35%; animation-duration: 3.3s; }
+
+        /* Partículas flotantes */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 4s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Mensaje especial */
+        .message {
+            text-align: center;
+            color: #FFF8DC;
+            font-size: 1.2em;
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            max-width: 600px;
+            animation: messageGlow 3s infinite alternate;
+        }
+
+        @keyframes messageGlow {
+            0% { border-color: rgba(255, 215, 0, 0.3); }
+            100% { border-color: rgba(255, 215, 0, 0.6); }
+        }
+
+        /* Efectos al hover */
+        .flower:hover {
+            transform: scale(1.2);
+            transition: transform 0.3s ease;
+        }
+
+        .flower:hover .petal {
+            animation-duration: 0.5s;
+        }
+
+        /* Responsive Design */
+        /* Desktop grande (1200px+) */
+        @media (min-width: 1200px) {
+            .title {
+                font-size: 4em;
+            }
+            
+            .subtitle {
+                font-size: 1.8em;
+            }
+            
+            .flower-garden {
+                height: 700px;
+            }
+            
+            .flower {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .message {
+                font-size: 1.4em;
+                max-width: 800px;
+                padding: 30px;
+            }
+        }
+
+        /* Optimizaciones para dispositivos móviles - fondo color sólido */
+        @media (max-width: 768px) {
+            html {
+                height: 100%;
+                height: -webkit-fill-available;
+                margin: 0;
+                padding: 0;
+                background: #1a1a2e;
+            }
+            
+            body {
+                height: 100%;
+                height: -webkit-fill-available;
+                margin: 0;
+                padding: 0;
+                background: #1a1a2e;
+                position: relative;
+                overflow-x: hidden;
+            }
+            
+            .universe {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                height: -webkit-fill-available;
+                background: #1a1a2e;
+                z-index: -2;
+            }
+            
+            .universe::before {
+                background-size: 300px 100px;
+                opacity: 0.6;
+            }
+            
+            .container {
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                width: 100vw;
+                margin: 0;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+        }
+        
+        /* Tablets y laptops (768px - 1199px) */
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .title {
+                font-size: 3.2em;
+            }
+            
+            .subtitle {
+                font-size: 1.4em;
+            }
+            
+            .flower-garden {
+                height: 550px;
+            }
+            
+            .flower {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .message {
+                font-size: 1.1em;
+                max-width: 650px;
+                margin: 30px 15px;
+            }
+        }
+
+        /* Tablets verticales y móviles horizontales (481px - 768px) */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 2.8em;
+                margin-bottom: 15px;
+            }
+            
+            .subtitle {
+                font-size: 1.3em;
+                margin-bottom: 30px;
+            }
+            
+            .flower-garden {
+                height: 450px;
+                max-width: 100%;
+            }
+            
+            .flower {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .message {
+                font-size: 1em;
+                margin: 25px 10px;
+                padding: 18px;
+                max-width: 90%;
+            }
+            
+            /* Ajustar posiciones de flores para tablets */
+            .flower:nth-child(1) { top: 8%; left: 12%; }
+            .flower:nth-child(2) { top: 18%; left: 75%; }
+            .flower:nth-child(3) { top: 35%; left: 20%; }
+            .flower:nth-child(4) { top: 45%; left: 85%; }
+            .flower:nth-child(5) { top: 65%; left: 8%; }
+            .flower:nth-child(6) { top: 55%; left: 65%; }
+            .flower:nth-child(7) { top: 25%; left: 45%; }
+            .flower:nth-child(8) { top: 75%; left: 35%; }
+        }
+
+        /* Móviles (320px - 480px) */
+        @media (max-width: 480px) {
+            html {
+                background: #090A0F !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100% !important;
+                height: -webkit-fill-available !important;
+            }
+            
+            body {
+                background: #090A0F !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                min-height: 100vh !important;
+                min-height: -webkit-fill-available !important;
+            }
+            
+            .container {
+                padding: 10px;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                width: 100vw;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            
+            .title {
+                font-size: 2.2em;
+                margin-bottom: 10px;
+                line-height: 1.1;
+            }
+            
+            .subtitle {
+                font-size: 1.1em;
+                margin-bottom: 25px;
+            }
+            
+            .flower-garden {
+                height: 350px;
+                width: 100%;
+            }
+            
+            .flower {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .petal {
+                width: 20px;
+                height: 32px;
+            }
+            
+            .flower-center {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .stem {
+                width: 3px;
+                height: 45px;
+                bottom: -45px;
+            }
+            
+            .leaf {
+                width: 12px;
+                height: 20px;
+            }
+            
+            .message {
+                font-size: 0.9em;
+                margin: 20px 8px;
+                padding: 15px;
+                max-width: 95%;
+                line-height: 1.4;
+            }
+            
+            /* Reposicionar flores para móviles */
+            .flower:nth-child(1) { top: 5%; left: 8%; }
+            .flower:nth-child(2) { top: 15%; left: 78%; }
+            .flower:nth-child(3) { top: 30%; left: 15%; }
+            .flower:nth-child(4) { top: 40%; left: 82%; }
+            .flower:nth-child(5) { top: 60%; left: 5%; }
+            .flower:nth-child(6) { top: 50%; left: 68%; }
+            .flower:nth-child(7) { top: 20%; left: 45%; }
+            .flower:nth-child(8) { top: 70%; left: 30%; }
+            
+            /* Deshabilitar cursor personalizado en móviles */
+            .custom-cursor {
+                display: none;
+            }
+            
+            /* Ajustar hover effects para touch */
+            .flower:active {
+                transform: scale(1.1);
+                transition: transform 0.2s ease;
+            }
+        }
+
+        /* Móviles muy pequeños (hasta 320px) */
+        @media (max-width: 320px) {
+            .title {
+                font-size: 1.8em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .flower-garden {
+                height: 280px;
+            }
+            
+            .flower {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .message {
+                font-size: 0.85em;
+                padding: 12px;
+                margin: 15px 5px;
+            }
+        }
+
+        /* Orientación landscape en móviles */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .container {
+                padding: 8px;
+            }
+            
+            .title {
+                font-size: 2em;
+                margin-bottom: 8px;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+                margin-bottom: 15px;
+            }
+            
+            .flower-garden {
+                height: 250px;
+            }
+            
+            .flower {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .message {
+                font-size: 0.8em;
+                margin: 15px 10px;
+                padding: 12px;
+            }
+        }
+
+        /* Mini reproductor de audio */
+        .audio-player {
+            position: relative;
+            background: rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            animation: playerGlow 3s infinite alternate;
+            transition: all 0.3s ease;
+            margin: 20px auto 0;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .audio-player:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes playerGlow {
+            0% { 
+                border-color: rgba(255, 215, 0, 0.6);
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            }
+            100% { 
+                border-color: rgba(255, 215, 0, 0.9);
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        .play-pause-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .play-pause-btn:active {
+            transform: scale(0.95);
+        }
+
+        .audio-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .song-title {
+            color: #FFD700;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+        }
+
+        .audio-progress {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 0%;
+            transition: width 0.1s ease;
+            border-radius: 2px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .volume-btn {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .volume-btn:hover {
+            color: #FFA500;
+        }
+
+        .volume-slider {
+            width: 60px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            width: 12px;
+            height: 12px;
+            background: #FFD700;
+            border-radius: 50%;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #FFD700;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Animación de música tocando */
+        .music-animation {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: 5px;
+        }
+
+        .music-bar {
+            width: 3px;
+            background: #FFD700;
+            border-radius: 2px;
+            animation: musicBounce 1s infinite ease-in-out;
+        }
+
+        .music-bar:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .music-bar:nth-child(2) { height: 15px; animation-delay: 0.1s; }
+        .music-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+        .music-bar:nth-child(4) { height: 12px; animation-delay: 0.3s; }
+
+        @keyframes musicBounce {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        .music-animation.paused .music-bar {
+            animation-play-state: paused;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .audio-player {
+                padding: 12px 18px;
+                gap: 10px;
+                margin: 25px auto;
+                max-width: 350px;
+            }
+            
+            .play-pause-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .song-title {
+                font-size: 11px;
+            }
+            
+            .audio-progress {
+                width: 80px;
+            }
+            
+            .volume-slider {
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .audio-player {
+                padding: 10px 15px;
+                flex-direction: column;
+                gap: 8px;
+                margin: 20px auto;
+                max-width: 300px;
+            }
+            
+            .volume-control {
+                display: none; /* Ocultar en móviles muy pequeños */
+            }
+            
+            .audio-progress {
+                width: 120px;
+            }
+        }
+
+        /* Modal de imagen para las flores */
+        .flower-image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .flower-image-modal.active {
+            display: flex;
+        }
+
+        .flower-image-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            border: 3px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            animation: slideIn 0.4s ease;
+        }
+
+        .flower-image {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: #FFD700;
+            border: none;
+            border-radius: 50%;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: #FFA500;
+            transform: scale(1.1);
+        }
+
+        .flower-title {
+            text-align: center;
+            color: #FFD700;
+            font-size: 1.2em;
+            margin-top: 15px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+            15% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            85% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
+        /* Indicador visual para flores interactivas */
+        .flower::after {
+            content: '📸';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: rgba(255, 215, 0, 0.9);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .flower:hover::after {
+            opacity: 1;
+        }
+
+        /* Responsive para modal en móviles */
+        @media (max-width: 768px) {
+            .flower-image-container {
+                max-width: 95%;
+                max-height: 80%;
+                padding: 15px;
+            }
+            
+            .flower-image {
+                max-width: 300px;
+                max-height: 350px;
+            }
+            
+            .close-modal {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            
+            .flower-title {
+                font-size: 1em;
+            }
+
+            .flower::after {
+                opacity: 1;
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+        }
+
+        /* Mejoras de rendimiento para dispositivos táctiles */
+        @media (hover: none) and (pointer: coarse) {
+            .flower:hover {
+                transform: none;
+            }
+            
+            .flower:active {
+                transform: scale(1.05);
+                transition: transform 0.1s ease;
+            }
+            
+            .custom-cursor {
+                display: none !important;
+            }
+            
+            /* Reducir animaciones en móviles */
+            .star {
+                animation-duration: 4s !important; /* Más lentas */
+            }
+            
+            .particle {
+                animation-duration: 6s !important; /* Más lentas */
+            }
+            
+            .flower {
+                animation-duration: 4s !important; /* Más lentas */
+            }
+            
+            .petal {
+                animation-duration: 3s !important; /* Más lentas */
+            }
+        }
+        
+        /* Optimizaciones extremas para dispositivos muy pequeños o de gama baja */
+        @media (max-width: 480px), (max-height: 600px) {
+            /* Deshabilitar algunas animaciones intensivas */
+            .title {
+                animation: none !important;
+            }
+            
+            .message {
+                animation: none !important;
+            }
+            
+            .audio-player {
+                animation-duration: 6s !important;
+            }
+            
+            /* Reducir efectos de box-shadow intensivos */
+            .flower-center,
+            .petal {
+                box-shadow: none !important;
+            }
+            
+            /* Simplificar gradientes */
+            .universe {
+                background: #1B2735 !important;
+            }
+            
+            /* Estrellas fugaces más simples en móviles */
+            .shooting-star {
+                width: 2px;
+                height: 2px;
+                box-shadow: 0 0 4px #FFD700 !important;
+            }
+            
+            .shooting-star::before {
+                width: 40px !important;
+                height: 1px !important;
+            }
+        }
+        
+        /* Optimización para dispositivos con pocos núcleos */
+        @media (max-width: 768px) {
+            .star:nth-child(n+16) {
+                display: none; /* Ocultar estrellas extra */
+            }
+            
+            .particle:nth-child(n+4) {
+                display: none; /* Limitar partículas */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cursor personalizado -->
+    <div class="custom-cursor"></div>
+
+    <!-- Fondo de universo -->
+    <div class="universe"></div>
+    <div class="stars"></div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1 class="title">🌻 Flores Amarillas 🌻</h1>
+        <p class="subtitle">A mis consentidas</p>
+        
+        <!-- Mini reproductor de audio después de "A mis consentidas" -->
+        <div class="audio-player" id="audioPlayer" style="margin-top: 5px;">
+            <button class="play-pause-btn" id="playPauseBtn" aria-label="Reproducir/Pausar música">
+                ▶️
+            </button>
+            
+            <div class="audio-info">
+                <div class="song-title">🌻 Flores Amarillas 🌻</div>
+                <div class="audio-progress" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            
+            <div class="music-animation" id="musicAnimation">
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+            </div>
+            
+            <div class="volume-control">
+                <button class="volume-btn" id="volumeBtn" aria-label="Silenciar">🔊</button>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+            </div>
+            
+            <audio id="backgroundMusic" preload="auto" loop>
+                <source src="audio/flores-amarillas.mp3" type="audio/mpeg">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+        </div>
+        
+        <!-- Jardín de flores -->
+        <div class="flower-garden">
+            <!-- Flores animadas -->
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+
+            <div class="flower">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="flower-center"></div>
+                <div class="stem"></div>
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+            </div>
+        </div>
+
+        <!-- Mensaje especial -->
+        <div class="message">
+            <p>💛 <strong>Para mis dos amores</strong> 💛</p>
+            
+            <p>Para mis princesas</p>
+            <p>Quienes alegran mis dias</p>
+            <br>
+            <p>✨ <em>No tengo flores reales, pero con esto les demuestro cuán importantes son para mí,</em> ✨</p>
+            <br>
+            <p>🌻 Sepan que son mi tesoro más preciado,</p>
+            <p>mis dos joyas que llenan mi mundo de color y felicidad. 🌻</p>
+            <br>
+            <p><strong>¡Las amo infinitamente!</strong></p>
+            <p>💖 <strong>¡Feliz Día de las Flores Amarillas!</strong> 💖</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Variables globales para el control de audio
+        let userHasInteracted = false;
+        let overlayShown = false;
+        
+        // Función global para mostrar ventana de bienvenida
+        function showAutoplayNotification() {
+            // Evitar múltiples overlays
+            if (overlayShown || userHasInteracted) return;
+            overlayShown = true;
+            
+            console.log('🌟 Mostrando ventana de bienvenida principal...');
+            // Crear overlay de inicio musical
+            const overlay = document.createElement('div');
+            overlay.id = 'musicStartOverlay';
+            overlay.innerHTML = `
+                <div class="music-start-container">
+                    <div class="music-icon">🎵</div>
+                    <h3>¡Esto me quedó asombroso!</h3>
+                    <button class="start-music-btn">🌟 Iniciar 🌟</button>
+                    <small>Haz clic en cualquier lugar</small>
+                </div>
+            `;
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(26, 26, 46, 0.95);
+                backdrop-filter: blur(10px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.5s ease-out;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                .music-start-container {
+                    text-align: center;
+                    color: white;
+                    padding: 40px;
+                    border-radius: 20px;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(20px);
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    max-width: 400px;
+                    animation: slideInScale 0.6s ease-out;
+                }
+                
+                .music-icon {
+                    font-size: 60px;
+                    margin-bottom: 20px;
+                    animation: musicPulse 2s ease-in-out infinite;
+                }
+                
+                .music-start-container h3 {
+                    margin: 0 0 15px 0;
+                    font-size: 28px;
+                    color: #FFD700;
+                    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+                }
+                
+                .music-start-container p {
+                    margin: 0 0 25px 0;
+                    font-size: 16px;
+                    color: rgba(255, 255, 255, 0.9);
+                    line-height: 1.5;
+                }
+                
+                .start-music-btn {
+                    background: linear-gradient(45deg, #FFD700, #FFA500);
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 50px;
+                    color: #333;
+                    font-size: 18px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+                    margin-bottom: 15px;
+                    display: block;
+                    width: 100%;
+                }
+                
+                .start-music-btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6);
+                    background: linear-gradient(45deg, #FFA500, #FFD700);
+                }
+                
+                .music-start-container small {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 12px;
+                }
+                
+                @keyframes musicPulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+                
+                @keyframes slideInScale {
+                    0% { 
+                        opacity: 0; 
+                        transform: scale(0.8) translateY(30px); 
+                    }
+                    100% { 
+                        opacity: 1; 
+                        transform: scale(1) translateY(0); 
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(overlay);
+            
+            // Event listener para el botón
+            const startBtn = overlay.querySelector('.start-music-btn');
+            startBtn.addEventListener('click', () => {
+                enableAudioOnFirstInteraction();
+                document.body.removeChild(overlay);
+                document.head.removeChild(style);
+            });
+            
+            // También permitir clic en cualquier lugar del overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    enableAudioOnFirstInteraction();
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                }
+            });
+        }
+        
+        // Función global para activar audio
+        function enableAudioOnFirstInteraction() {
+            if (userHasInteracted) return; // Evitar múltiples activaciones
+            
+            userHasInteracted = true;
+            console.log('🎵 Iniciando aventura por interacción del usuario...');
+            
+            // Obtener referencias a los elementos de audio
+            const audio = document.getElementById('backgroundMusic');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const musicAnimation = document.getElementById('musicAnimation');
+            
+            if (audio && playPauseBtn && musicAnimation) {
+                // Reproducir audio directamente sin reintentos complejos
+                audio.play().then(() => {
+                    console.log('✅ Aventura iniciada exitosamente!');
+                    playPauseBtn.textContent = '⏸️';
+                    musicAnimation.classList.remove('paused');
+                }).catch(e => {
+                    console.log('❌ Error al iniciar aventura:', e);
+                    // Un solo reintento simple
+                    setTimeout(() => {
+                        audio.play().catch(err => {
+                            console.log('❌ La aventura no pudo iniciarse:', err);
+                        });
+                    }, 500);
+                });
+            }
+        }
+        
+        // Crear estrellas animadas infinitas (optimizado para dispositivos)
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            // Detección más precisa de dispositivos móviles
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            
+            // Reducir drásticamente el número de estrellas para mejor rendimiento
+            let numberOfStars;
+            if (isLowEnd) {
+                numberOfStars = 10; // Mínimo para dispositivos lentos
+            } else if (isMobile) {
+                numberOfStars = 25; // Reducido para móviles
+            } else {
+                numberOfStars = 60; // Reducido también para desktop
+            }
+
+            // Distribuir estrellas en área extendida (200vw x 200vh)
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Distribuir en área extendida para efecto infinito
+                // Como el contenedor está desplazado -50vh/-50vw, ajustamos la distribución
+                star.style.left = (Math.random() * 100) + '%'; // 0% a 100% del contenedor extendido
+                star.style.top = (Math.random() * 100) + '%';  // 0% a 100% del contenedor extendido
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Animaciones variadas
+                
+                // Variación de tamaños para más realismo
+                const size = Math.random() * 2 + 1; // 1px a 3px
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // Variación de brillo
+                star.style.opacity = Math.random() * 0.8 + 0.2; // 0.2 a 1.0
+                
+                starsContainer.appendChild(star);
+            }
+            
+            console.log(`✨ ${numberOfStars} estrellas distribuidas en área infinita`);
+        }
+
+        // Crear partículas flotantes (adaptado por dispositivo)
+        function createParticles() {
+            // Detección mejorada de dispositivos
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            
+            // Intervalos y duraciones optimizados
+            let particleInterval, particleDuration, maxParticles;
+            
+            if (isLowEnd) {
+                particleInterval = 4000; // Intervalos más largos
+                particleDuration = 6000;
+                maxParticles = 2; // Menos partículas
+            } else if (isMobile) {
+                particleInterval = 2500; // Más espaciado
+                particleDuration = 5000;
+                maxParticles = 3; // Reducido
+            } else {
+                particleInterval = 1500; // Más controlado
+                particleDuration = 4000;
+                maxParticles = 5; // Reducido
+            }
+            
+            let activeParticles = 0;
+            
+            const particleIntervalId = setInterval(() => {
+                // Limitar número máximo de partículas activas
+                if (activeParticles >= maxParticles) return;
+                
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 2 + 3) + 's'; // Más lentas
+                document.body.appendChild(particle);
+                activeParticles++;
+
+                // Eliminar partícula después de la animación
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.remove();
+                        activeParticles--;
+                    }
+                }, particleDuration);
+            }, particleInterval);
+            
+            // Pausar partículas cuando la página no es visible
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    clearInterval(particleIntervalId);
+                }
+            });
+        }
+
+        // Cursor personalizado (solo para desktop)
+        function setupCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+            
+            // Solo activar en dispositivos no táctiles
+            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                document.addEventListener('mousemove', (e) => {
+                    cursor.style.left = e.clientX - 10 + 'px';
+                    cursor.style.top = e.clientY - 10 + 'px';
+                });
+
+                document.addEventListener('mousedown', () => {
+                    cursor.style.transform = 'scale(0.8)';
+                });
+
+                document.addEventListener('mouseup', () => {
+                    cursor.style.transform = 'scale(1)';
+                });
+            } else {
+                cursor.style.display = 'none';
+            }
+        }
+
+        // Efecto de brillo en las flores y mostrar imagen al hacer clic (optimizado)
+        function setupFlowerEffects() {
+            const flowers = document.querySelectorAll('.flower');
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            flowers.forEach((flower, index) => {
+                let isProcessing = false; // Prevenir clics múltiples
+                
+                // Efecto de brillo optimizado
+                const addGlowEffect = () => {
+                    if (flower.style.filter) return; // Ya tiene efecto activo
+                    flower.style.filter = 'brightness(1.3)';
+                    flower.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        flower.style.filter = '';
+                        flower.style.transform = '';
+                    }, 300); // Más rápido
+                };
+
+                // Mostrar imagen con respuesta instantánea
+                const showFlowerImage = () => {
+                    if (isProcessing) return;
+                    isProcessing = true;
+                    
+                    const imageNumber = index + 1;
+                    showFlowerImageInstant(imageNumber);
+                    
+                    // Reset después de un tiempo
+                    setTimeout(() => {
+                        isProcessing = false;
+                    }, 500); // Reducido de 1000ms
+                };
+
+                // Usar solo un tipo de evento según el dispositivo
+                if (isTouchDevice) {
+                    // Solo touchend para dispositivos táctiles (más confiable)
+                    flower.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        addGlowEffect();
+                        showFlowerImage();
+                    }, { passive: false });
+                } else {
+                    // Solo click para dispositivos de escritorio
+                    flower.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        addGlowEffect();
+                        showFlowerImage();
+                    });
+                }
+
+                // Hacer las flores más accesibles
+                flower.style.cursor = 'pointer';
+                flower.setAttribute('tabindex', '0');
+                flower.setAttribute('role', 'button');
+                flower.setAttribute('aria-label', `Ver imagen de la flor ${index + 1}`);
+
+                // Soporte para teclado (solo si no es táctil)
+                if (!isTouchDevice) {
+                    flower.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addGlowEffect();
+                            showFlowerImage();
+                        }
+                    });
+                }
+            });
+        }
+
+        // Crear modal de imagen
+        function createImageModal() {
+            const modal = document.createElement('div');
+            modal.className = 'flower-image-modal';
+            modal.id = 'flowerImageModal';
+            
+            modal.innerHTML = `
+                <div class="flower-image-container">
+                    <button class="close-modal" onclick="closeImageModal()" aria-label="Cerrar imagen">
+                        ×
+                    </button>
+                    <img class="flower-image" id="modalImage" src="" alt="">
+                    <div class="flower-title" id="modalTitle"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Cerrar modal al hacer clic fuera de la imagen
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeImageModal();
+                }
+            });
+            
+            // Cerrar modal con la tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeImageModal();
+                }
+            });
+        }
+
+        // Reproductor de audio (optimizado para autoplay con manejo de bloqueos)
+        function setupAudioPlayer() {
+            const audio = document.getElementById('backgroundMusic');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            const volumeBtn = document.getElementById('volumeBtn');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const musicAnimation = document.getElementById('musicAnimation');
+            
+            // Verificar que todos los elementos existan
+            if (!audio || !playPauseBtn || !progressBar || !progressContainer || 
+                !volumeBtn || !volumeSlider || !musicAnimation) {
+                console.log('Error: No se pudieron encontrar todos los elementos del reproductor');
+                return;
+            }
+            
+            let isPlaying = false;
+            let isMuted = false;
+            // userHasInteracted y overlayShown ya están definidas globalmente
+            
+            // Configurar volumen inicial
+            audio.volume = 0.7;
+            
+            // Configuración para autoplay
+            audio.preload = 'auto';
+            audio.muted = false;
+            audio.loop = true;
+            
+            // Función para reproducir/pausar
+            function togglePlayPause() {
+                if (isPlaying) {
+                    audio.pause();
+                    playPauseBtn.textContent = '▶️';
+                    musicAnimation.classList.add('paused');
+                } else {
+                    playAudio();
+                    playPauseBtn.textContent = '⏸️';
+                    musicAnimation.classList.remove('paused');
+                }
+                isPlaying = !isPlaying;
+            }
+            
+            // Función mejorada para reproducir audio - SIEMPRE mostrar ventana de bienvenida
+            function playAudio() {
+                // En lugar de intentar autoplay automático, mostrar ventana de bienvenida
+                console.log('Mostrando ventana de bienvenida...');
+                showAutoplayNotification();
+            }
+            
+
+            
+            // Event listeners del reproductor
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            
+            // Actualizar barra de progreso
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration) {
+                    const progress = (audio.currentTime / audio.duration) * 100;
+                    progressBar.style.width = progress + '%';
+                }
+            });
+            
+            // Hacer clic en la barra de progreso para buscar
+            progressContainer.addEventListener('click', (e) => {
+                const rect = progressContainer.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = percent * audio.duration;
+            });
+            
+            // Control de volumen
+            volumeSlider.addEventListener('input', (e) => {
+                const volume = e.target.value / 100;
+                audio.volume = volume;
+                
+                // Cambiar ícono según volumen
+                if (volume === 0) {
+                    volumeBtn.textContent = '🔇';
+                } else if (volume < 0.5) {
+                    volumeBtn.textContent = '🔉';
+                } else {
+                    volumeBtn.textContent = '🔊';
+                }
+            });
+            
+            // Botón de silenciar
+            volumeBtn.addEventListener('click', () => {
+                if (isMuted) {
+                    audio.volume = volumeSlider.value / 100;
+                    volumeBtn.textContent = audio.volume > 0.5 ? '🔊' : '🔉';
+                } else {
+                    audio.volume = 0;
+                    volumeBtn.textContent = '🔇';
+                }
+                isMuted = !isMuted;
+            });
+            
+
+            
+            // Manejar errores de carga
+            audio.addEventListener('error', (e) => {
+                console.log('Error al cargar el audio:', e);
+                document.querySelector('.song-title').textContent = '🌻 Audio no disponible 🌻';
+            });
+            
+            // Cuando la canción termina
+            audio.addEventListener('ended', () => {
+                isPlaying = false;
+                playPauseBtn.textContent = '▶️';
+                musicAnimation.classList.add('paused');
+                progressBar.style.width = '0%';
+            });
+        }
+
+        // Frases emotivas para cada flor (para mis dos amores juntas)
+        const emotivePhrases = [
+            "Bebés hermosas 👶💕✨",
+            "Niñas más bonitas 🌸👧🌟",
+            "Mis princesas👑💖🏰",
+            "Cositas 😍💨❤️",
+            "Compañeras de aventuras 🦋😄🎭",
+            "Las dueñas 💓🔐👑",
+            "Mis pequeñas 🌻📏💪",
+            "Las que hacen que valga la pena todo 💛🌈🙌"
+        ];
+
+        // Cache de imágenes para evitar recargas
+        const imageCache = new Map();
+        const imagePreloadStatus = new Map();
+        
+        // Sistema de precarga agresiva de imágenes
+        function preloadAllImages() {
+            const extensions = ['jpeg', 'jpg', 'png', 'webp', 'gif'];
+            const maxImages = 8; // Número de flores
+            
+            console.log('Iniciando precarga de imágenes...');
+            
+            for (let imageNumber = 1; imageNumber <= maxImages; imageNumber++) {
+                const cacheKey = `image_${imageNumber}`;
+                let imageFound = false;
+                
+                // Probar todas las extensiones en paralelo
+                extensions.forEach((extension, index) => {
+                    const imageSrc = `images/${imageNumber}.${extension}`;
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        if (!imageFound) {
+                            imageFound = true;
+                            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                            const imageData = { src: imageSrc, phrase: phrase, loaded: true };
+                            imageCache.set(cacheKey, imageData);
+                            imagePreloadStatus.set(cacheKey, true);
+                            console.log(`✅ Imagen ${imageNumber} precargada: ${extension}`);
+                        }
+                    };
+                    
+                    img.onerror = function() {
+                        // Solo marcar como no encontrada si fue la última extensión
+                        if (index === extensions.length - 1 && !imageFound) {
+                            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+                            const placeholderData = { src: '', phrase: phrase, loaded: true };
+                            imageCache.set(cacheKey, placeholderData);
+                            imagePreloadStatus.set(cacheKey, true);
+                            console.log(`❌ Imagen ${imageNumber} no encontrada`);
+                        }
+                    };
+                    
+                    img.src = imageSrc;
+                });
+            }
+        }
+        
+        // Sistema profesional de estrellas fugaces
+        function createShootingStars() {
+            // Detectar capacidad del dispositivo
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            const isHighEnd = !isMobile && navigator.hardwareConcurrency >= 4;
+            
+            // Configuración optimizada según dispositivo
+            let config = {
+                minInterval: 15000,   // Intervalos más largos
+                maxInterval: 30000,   // Mucho más espaciado
+                probability: 0.4,     // Menos frecuente
+                maxConcurrent: 1      // Solo una a la vez
+            };
+            
+            if (isLowEnd) {
+                config = {
+                    minInterval: 20000,   // Muy espaciado
+                    maxInterval: 40000,
+                    probability: 0.3,     // Muy poco frecuente
+                    maxConcurrent: 1
+                };
+            } else if (isMobile) {
+                config = {
+                    minInterval: 18000,
+                    maxInterval: 35000,
+                    probability: 0.35,
+                    maxConcurrent: 1
+                };
+            } else if (isHighEnd) {
+                config = {
+                    minInterval: 5000,
+                    maxInterval: 12000,
+                    probability: 0.8,
+                    maxConcurrent: 2
+                };
+            }
+            
+            let activeStars = 0;
+            
+            function scheduleNextStar() {
+                const interval = Math.random() * (config.maxInterval - config.minInterval) + config.minInterval;
+                
+                setTimeout(() => {
+                    if (Math.random() < config.probability && activeStars < config.maxConcurrent && !document.hidden) {
+                        createSingleShootingStar();
+                    }
+                    scheduleNextStar(); // Programar la siguiente
+                }, interval);
+            }
+            
+            function createSingleShootingStar() {
+                activeStars++;
+                
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                
+                // Variaciones aleatorias
+                const variations = ['', 'bright', 'fast', 'slow'];
+                const randomVariation = variations[Math.floor(Math.random() * variations.length)];
+                if (randomVariation) {
+                    star.classList.add(randomVariation);
+                }
+                
+                // Posición inicial aleatoria en el área superior izquierda
+                const startX = Math.random() * (window.innerWidth * 0.2) - 100;
+                const startY = Math.random() * (window.innerHeight * 0.2) - 100;
+                
+                star.style.left = startX + 'px';
+                star.style.top = startY + 'px';
+                
+                // Añadir al DOM
+                document.body.appendChild(star);
+                
+                // Activar animación
+                requestAnimationFrame(() => {
+                    star.classList.add('active');
+                });
+                
+                // Limpiar después de la animación
+                const duration = star.classList.contains('fast') ? 1800 : 
+                               star.classList.contains('slow') ? 3200 : 2500;
+                
+                setTimeout(() => {
+                    if (star.parentNode) {
+                        star.remove();
+                    }
+                    activeStars--;
+                }, duration + 100);
+            }
+            
+            // Iniciar el sistema
+            scheduleNextStar();
+            
+            // Pausar cuando la página no es visible (optimización de batería)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Las estrellas activas seguirán su curso, pero no se crearán nuevas
+                    console.log('Estrellas fugaces pausadas (página no visible)');
+                }
+            });
+        }
+        
+        // Función optimizada para mostrar imágenes instantáneamente
+        function showFlowerImageInstant(imageNumber) {
+            const cacheKey = `image_${imageNumber}`;
+            
+            // Si la imagen ya está en cache, mostrarla inmediatamente
+            if (imageCache.has(cacheKey)) {
+                const cachedData = imageCache.get(cacheKey);
+                showImageModal(cachedData.src, cachedData.phrase);
+                return;
+            }
+            
+            // Si no está en cache, mostrar placeholder inmediatamente y buscar en segundo plano
+            const phrase = emotivePhrases[imageNumber - 1] || "Mi amor especial 💖";
+            showImageModal('', phrase + ' (Cargando...)');
+            
+            // Buscar imagen en segundo plano
+            const extensions = ['jpeg', 'jpg', 'png', 'webp'];
+            tryLoadImageBackground(imageNumber, extensions, 0, phrase);
+        }
+        
+        // Función auxiliar para cargar en segundo plano
+        function tryLoadImageBackground(imageNumber, extensions, extensionIndex, phrase) {
+            if (extensionIndex >= extensions.length) return;
+            
+            const extension = extensions[extensionIndex];
+            const imageSrc = `images/${imageNumber}.${extension}`;
+            const testImage = new Image();
+            
+            testImage.onload = function() {
+                // Actualizar cache
+                const cacheKey = `image_${imageNumber}`;
+                const imageData = { src: imageSrc, phrase: phrase, loaded: true };
+                imageCache.set(cacheKey, imageData);
+                
+                // Si el modal está abierto para esta imagen, actualizarlo
+                const modal = document.getElementById('flowerImageModal');
+                const modalImage = document.getElementById('modalImage');
+                const modalTitle = document.getElementById('modalTitle');
+                
+                if (modal && modal.classList.contains('active') && modalTitle.textContent.includes('Cargando')) {
+                    modalImage.src = imageSrc;
+                    modalTitle.textContent = phrase;
+                }
+            };
+            
+            testImage.onerror = function() {
+                tryLoadImageBackground(imageNumber, extensions, extensionIndex + 1, phrase);
+            };
+            
+            testImage.src = imageSrc;
+        }
+
+        // Mostrar imagen en modal
+        function showImageModal(imageSrc, title) {
+            const modal = document.getElementById('flowerImageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            // Si no hay imagen válida, mostrar placeholder
+            if (!imageSrc) {
+                modalImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI0ZGRDcwMCIgb3BhY2l0eT0iMC4zIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0iI0ZGRDcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+MuyBGbG9yIEFtYXJpbGxhPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNGRkQ3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
+                modalTitle.textContent = title + ' (Imagen no disponible)';
+            } else {
+                modalImage.src = imageSrc;
+                modalImage.alt = title;
+                modalTitle.textContent = title;
+            }
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        }
+
+        // Cerrar modal de imagen
+        function closeImageModal() {
+            const modal = document.getElementById('flowerImageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Restaurar scroll
+        }
+
+        // Inicializar todas las funciones (optimizado para rendimiento)
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM completamente cargado - Iniciando optimizaciones');
+            
+            // Detectar capacidad del dispositivo al inicio
+            const deviceInfo = {
+                isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768,
+                isLowEnd: window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2,
+                cores: navigator.hardwareConcurrency || 2,
+                memory: navigator.deviceMemory || 'unknown'
+            };
+            
+            console.log('📱 Dispositivo detectado:', deviceInfo);
+            
+            // Optimizar según capacidad del dispositivo
+            if (deviceInfo.isLowEnd) {
+                console.log('⚡ Modo de rendimiento activado para dispositivo de gama baja');
+                // Reducir calidad visual para mejor rendimiento
+                document.documentElement.style.setProperty('--animation-quality', 'optimizeSpeed');
+            }
+            
+            // Detectar tipo de dispositivo
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const isLowEnd = window.innerWidth <= 480 || navigator.hardwareConcurrency <= 2;
+            
+            // ⚡ PRECARGA INMEDIATA DE IMÁGENES (PRIORIDAD MÁXIMA)
+            preloadAllImages();
+            
+            // Inicializar funciones críticas inmediatamente
+            setupCustomCursor();
+            setupFlowerEffects();
+            createImageModal();
+            
+            // Cargar elementos menos críticos con delay escalonado y condicional
+            setTimeout(() => {
+                createStars();
+            }, 100);
+            
+            setTimeout(() => {
+                if (!deviceInfo.isLowEnd) { // Solo crear partículas si no es gama baja
+                    createParticles();
+                } else {
+                    console.log('⚡ Partículas deshabilitadas para mejor rendimiento');
+                }
+            }, 300);
+            
+            // Sistema de estrellas fugaces
+            setTimeout(() => {
+                createShootingStars();
+                console.log('Sistema de estrellas fugaces iniciado');
+            }, 800);
+            
+            // ⚡ REPRODUCTOR DE AUDIO CON VENTANA DE BIENVENIDA PRINCIPAL
+            setTimeout(() => {
+                console.log('Inicializando reproductor de audio...');
+                setupAudioPlayer();
+                
+                // Mostrar ventana de bienvenida inmediatamente
+                setTimeout(() => {
+                    if (!userHasInteracted) {
+                        console.log('🌟 Mostrando ventana de bienvenida...');
+                        showAutoplayNotification();
+                    }
+                }, 1000);
+            }, 200);
+            
+
+        });
+        
+
+
+
+
+        // Sistema de optimización de rendimiento
+        let isPageVisible = true;
+        let animationsPaused = false;
+        
+        // Pausar animaciones cuando la pestaña no está visible
+        document.addEventListener('visibilitychange', function() {
+            isPageVisible = !document.hidden;
+            
+            if (!isPageVisible && !animationsPaused) {
+                // Pausar animaciones para ahorrar recursos
+                document.body.style.animationPlayState = 'paused';
+                const animatedElements = document.querySelectorAll('.star, .flower, .particle, .shooting-star');
+                animatedElements.forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+                animationsPaused = true;
+                console.log('🔋 Animaciones pausadas para ahorrar recursos');
+            } else if (isPageVisible && animationsPaused) {
+                // Reanudar animaciones
+                document.body.style.animationPlayState = 'running';
+                const animatedElements = document.querySelectorAll('.star, .flower, .particle, .shooting-star');
+                animatedElements.forEach(el => {
+                    el.style.animationPlayState = 'running';
+                });
+                animationsPaused = false;
+                console.log('▶️ Animaciones reanudadas');
+            }
+        });
+
+        // Limpieza periódica de elementos no utilizados (optimización de memoria)
+        setInterval(() => {
+            // Limpiar partículas huérfanas
+            const orphanParticles = document.querySelectorAll('.particle');
+            orphanParticles.forEach(particle => {
+                if (!particle.style.animation || particle.style.opacity === '0') {
+                    particle.remove();
+                }
+            });
+            
+            // Limpiar estrellas fugaces completadas
+            const completedStars = document.querySelectorAll('.shooting-star:not(.active)');
+            if (completedStars.length > 5) { // Solo si hay muchas
+                completedStars.forEach((star, index) => {
+                    if (index < completedStars.length - 3) { // Mantener las últimas 3
+                        star.remove();
+                    }
+                });
+            }
+            
+            // Información de rendimiento (solo en desarrollo)
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                const elementCount = document.querySelectorAll('.star, .particle, .shooting-star').length;
+                if (elementCount > 100) {
+                    console.log(`🧹 Limpieza automática: ${elementCount} elementos animados`);
+                }
+            }
+        }, 30000); // Cada 30 segundos
+
+        // Efecto de paralaje suave (optimizado con throttling)
+        let ticking = false;
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const flowers = document.querySelectorAll('.flower');
+            
+            flowers.forEach((flower, index) => {
+                const speed = 0.3 + (index * 0.05); // Reducido para menos intensidad
+                flower.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+            ticking = false;
+        }
+        
+        // Solo habilitar paralaje en dispositivos de escritorio
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches && window.innerWidth > 768) {
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
+    </script>
+</body>
+</html>
